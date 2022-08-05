@@ -24,6 +24,7 @@ app.config.update(
 CORS(app)
 db.app = app
 db.init_app(app)
+db.create_all()
 
 app.register_blueprint(main_routes)
 # app.register_blueprint(auth_routes, url_prefix='/auth')

@@ -1,3 +1,4 @@
+from email.policy import default
 from ..database.db import db
 
 class Clothing(db.Model):
@@ -6,9 +7,8 @@ class Clothing(db.Model):
     description = db.Column(db.String(80), nullable=False)
     category = db.Column(db.String(80), nullable=False)
     size = db.Column(db.String(80), nullable=False)
-    # user_id =db.relationship('User', backref='clothing', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    on_offer = db.Column(db.Boolean, nullable=False)
+    on_offer = db.Column(db.Boolean, default=False, nullable=False)
     images = db.Column(db.String(80), nullable=True)
 
     def __init__(self, item_name, description, category, size, user_id, on_offer, images):
@@ -51,6 +51,3 @@ class Offers(db.Model):
         self.user_id = user_id
         self.on_offer = on_offer
         self.images = images
-
-    # def __repr__(self):
-    #     return '<Offers %r>' % self.item_name
