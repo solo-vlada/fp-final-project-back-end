@@ -1,4 +1,3 @@
-from crypt import methods
 from flask import Blueprint, request, jsonify
 from ..database.db import db
 from ..models.tables import Clothing, User
