@@ -9,7 +9,7 @@ def index():
     if request.method == "GET":
         all_clothing = Clothing.query.all()
         return jsonify(all_clothing)
-    else:
+    else: 
         pass
 
 @main_routes.route("/clothing", methods=["GET", "POST", "PUT", "DELETE"])
