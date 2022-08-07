@@ -12,21 +12,24 @@ def index():
     else: 
         pass
 
-@main_routes.route("/clothing", methods=["GET", "POST", "PUT", "DELETE"])
+@main_routes.route("/clothing")
 def clothing():
     if request.method == "GET":
         all_clothing = Clothing.query.all()
         return jsonify(all_clothing)
-    elif request.method == "POST":
-        clothing = Clothing(
-            name=request.json["name"],
-            description=request.json["description"],
-            price=request.json["price"],
-            image=request.json["image"],
-            user_id=request.json["user_id"]
-        )
-        db.session.add(clothing)
-        db.session.commit()
-        return jsonify(clothing)
+    else:
+        return jsonify({"message": "Method not allowed"})
+
+    # elif request.method == "POST":
+    #     clothing = Clothing(
+    #         name=request.json["name"],
+    #         description=request.json["description"],
+    #         price=request.json["price"],
+    #         image=request.json["image"],
+    #         user_id=request.json["user_id"]
+    #     )
+    #     db.session.add(clothing)
+    #     db.session.commit()
+    #     return jsonify(clothing)
 
 
