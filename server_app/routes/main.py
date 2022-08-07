@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from ..database.db import db
-from ..models.tables import Clothing, User
+from ..models.tables import Clothing
 
 main_routes = Blueprint("main", __name__)
 
