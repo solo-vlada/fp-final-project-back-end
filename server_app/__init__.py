@@ -35,4 +35,4 @@ app.register_blueprint(auth_routes, url_prefix='/auth')
 ## Main
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
