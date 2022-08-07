@@ -1,1 +1,1 @@
-worker: pipenv run start
+web: pipenv run start
