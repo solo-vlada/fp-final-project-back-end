@@ -10,7 +10,8 @@ flask-cors = "*"
 flask-sqlalchemy = "*"
 pyjwt = "*"
 datetime = "*"
-uuid = "*"
+psycopg2 = "*"
+gunicorn = "*"
 
 [dev-packages]
 pytest = "*"
