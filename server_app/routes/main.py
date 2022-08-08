@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, redirect
 from ..database.db import db
-from ..models.tables import Clothing, User
+from ..models.tables import Clothing
 from werkzeug import exceptions
 
 main_routes = Blueprint("main", __name__)
@@ -9,7 +9,7 @@ main_routes = Blueprint("main", __name__)
 def index(): 
     if request.method == "GET":
         all_clothing = Clothing.query.all()
-        return jsonify(all_clothing)
+        return jsonify(all_clothing[0].item_name)
     else:
         pass
 
@@ -21,22 +21,18 @@ def new_listing():
         db.session.add(new_item)
         db.session.commit()
 
-@main_routes.route("/test", methods=["GET", "POST"])
-def test(): 
-    if request.method == "GET":
-        new_item = Clothing(item_name="cool hat", description="red", category="hat", size="10", user_id=1, on_offer=False, images="imageurl")
-
-        db.session.add(new_item)
-        db.session.commit()
+@main_routes.errorhandler(exceptions.Unauthorized)
+def handle_401():
+    return 'error: 404 Could not verify', 401
 
 @main_routes.errorhandler(exceptions.NotFound)
 def handle_404():
     return 'error: 404 Page not found', 404
 
-@main_routes.errorhandler(exceptions.InternalServerError)
-def handle_500():
-    return 'error: 500 Internal server error', 500
-
 @main_routes.errorhandler(exceptions.MethodNotAllowed)
 def handle_405():
     return 'error: 405 Method is not allowed', 405
+
+@main_routes.errorhandler(exceptions.InternalServerError)
+def handle_500():
+    return 'error: 500 Internal server error', 500
