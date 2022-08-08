@@ -1,12 +1,6 @@
 from dotenv import load_dotenv
 from os import environ
-<<<<<<< Updated upstream
-from flask import Flask, render_template, request
-from flask_cors import CORS
 
-from .database.db import db
-from .routes.main import main_routes
-=======
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from functools import wraps
@@ -16,7 +10,6 @@ from .database.db import db
 from .routes.main import main_routes
 from .routes.auth import auth_routes
 from .models.tables import User
->>>>>>> Stashed changes
 
 #load environment variables
 load_dotenv()
@@ -51,7 +44,6 @@ def token_required(f):
             return jsonify({'message': 'token is invalid'})
         return f(current_user, *args, **kwargs)
     return decorator
->>>>>>> Stashed changes
 
 CORS(app)
 db.app = app
