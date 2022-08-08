@@ -1,10 +1,12 @@
-from flask import Blueprint, jsonify, make_response, request, current_app as app
+from ast import Param
+from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
 from werkzeug.security import generate_password_hash,check_password_hash
+from sqlalchemy import or_
 from functools import wraps
 import jwt
 import datetime
 from ..database.db import db
-from ..models.tables import User
+from ..models.tables import User, Messages
 
 auth_routes = Blueprint("auth", __name__)
 
@@ -26,21 +28,24 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorator
 
-# Regieter new user
+# Register new user
 @auth_routes.route('/register', methods=['POST'])
-def signup_user(): 
-   hashed_password = generate_password_hash(request.form['password'], method='sha256')
- 
-   new_user = User(
-    username=request.form['username'], 
-    password=hashed_password, 
-    location=request.form['location'], 
-    email=request.form['email']
-    )
+def register_user(): 
+    try:
+        hashed_password = generate_password_hash(request.form['password'], method='sha256')
+        
+        new_user = User(
+            username=request.form['username'], 
+            password=hashed_password, 
+            location=request.form['location'], 
+            email=request.form['email']
+        )
 
-   db.session.add(new_user)
-   db.session.commit()   
-   return jsonify({'message': 'registered successfully'})
+        db.session.add(new_user)
+        db.session.commit()   
+        return jsonify({'message': 'registered successfully'})
+    except:
+        return jsonify({'message': 'registration unsuccessful'})
 
 # Login to existing account
 @auth_routes.route('/login', methods=['POST']) 
@@ -73,3 +78,23 @@ def get_all_users():
      
        result.append(user_data)  
    return jsonify({'users': result})
+
+@auth_routes.route('/msg<int:user_id>', methods=['GET', 'POST'])
+def messenger_handling(user_id):
+    if request.method == 'GET':
+        #  retrieve all messages sent by or too user
+        all_messages = Messages.query.filter(or_(Messages.sender == user_id), (Messages.receiver == user_id))
+        pass
+    else:
+        # expect message in json format with user_id and receiver_id as the sender and recipient
+        content = request.json
+        new_message = Messages(
+            message_text=content['message_text'],
+            message_date=datetime.datetime.utcnow(),
+            sender=user_id,
+            receiver=content['receiver_id']
+            )
+
+        db.session.add(new_message)
+        db.session.commit()
+        pass
