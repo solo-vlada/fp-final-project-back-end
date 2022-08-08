@@ -13,7 +13,6 @@ def index():
     else:
         pass
 
-
 @main_routes.route("/new-listing", methods=["POST"])
 def new_listing(): 
     if request.method == "POST":

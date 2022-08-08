@@ -1,11 +1,7 @@
 {
     "_meta": {
         "hash": {
-<<<<<<< Updated upstream
-            "sha256": "d6d1b44622f790c6b16da9b939a1c2c547fcd1cfee0cb231eca476526c4fe0c9"
-=======
-            "sha256": "211a8660826f324734240f3f942ca9c7ca3e9838566e64e8608e97b82d82d027"
->>>>>>> Stashed changes
+            "sha256": "1cd7cd70502a73dd28b2d786d6a7d3a7bcd45f396afbc3fc3f6269e6c9026443"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -36,17 +32,6 @@
             "markers": "platform_system == 'Windows'",
             "version": "==0.4.5"
         },
-<<<<<<< Updated upstream
-=======
-        "datetime": {
-            "hashes": [
-                "sha256:65416160ff35a564c6cca67ce0c5cd1816eee4e8a2fb324556939689d0a9ee41",
-                "sha256:ec9894c438cdd54dc31578b1b43c79b11f8111dbeb066e372548a0a78a3bec46"
-            ],
-            "index": "pypi",
-            "version": "==4.5"
-        },
->>>>>>> Stashed changes
         "flask": {
             "hashes": [
                 "sha256:3c604c48c3d5b4c63e72134044c0b4fe90ff01ef65280b9fe2d38c8860d99fe5",
@@ -62,6 +47,14 @@
             ],
             "index": "pypi",
             "version": "==3.0.10"
+        },
+        "flask-jwt-extended": {
+            "hashes": [
+                "sha256:188907ea9332bdd123a95a457e7487556770480264ce3b78c8835b4347e324cc",
+                "sha256:a2571df484c5635ad996d364242ec28fc69f386915cd69b1842639712b84c36d"
+            ],
+            "index": "pypi",
+            "version": "==4.4.3"
         },
         "flask-sqlalchemy": {
             "hashes": [
@@ -131,17 +124,6 @@
             ],
             "markers": "python_version >= '3' and platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))",
             "version": "==1.1.2"
-<<<<<<< Updated upstream
-=======
-        },
-        "gunicorn": {
-            "hashes": [
-                "sha256:9dcc4547dbb1cb284accfb15ab5667a0e5d1881cc443e0677b4882a4067a807e",
-                "sha256:e0a968b5ba15f8a328fdfd7ab1fcb5af4470c28aaf7e55df02a99bc13138e6e8"
-            ],
-            "index": "pypi",
-            "version": "==20.1.0"
->>>>>>> Stashed changes
         },
         "itsdangerous": {
             "hashes": [
@@ -205,8 +187,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.1.1"
         },
-<<<<<<< Updated upstream
-=======
         "psycopg2": {
             "hashes": [
                 "sha256:06f32425949bd5fe8f625c49f17ebb9784e1e4fe928b7cce72edc36fb68e4c0c",
@@ -229,10 +209,10 @@
                 "sha256:72d1d253f32dbd4f5c88eaf1fdc62f3a19f676ccbadb9dbc5d07e951b2b26daf",
                 "sha256:d42908208c699b3b973cbeb01a969ba6a96c821eefb1c5bfe4c390c01d67abba"
             ],
-            "index": "pypi",
+
+            "markers": "python_version >= '3.6'",
             "version": "==2.4.0"
         },
->>>>>>> Stashed changes
         "python-dotenv": {
             "hashes": [
                 "sha256:b7e3b04a59693c42c36f9ab1cc2acc46fa5df8c78e178fc33a8d4cd05c8d498f",
@@ -241,8 +221,6 @@
             "index": "pypi",
             "version": "==0.20.0"
         },
-<<<<<<< Updated upstream
-=======
         "pytz": {
             "hashes": [
                 "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7",
@@ -258,7 +236,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==63.4.2"
         },
->>>>>>> Stashed changes
         "six": {
             "hashes": [
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
@@ -382,9 +359,6 @@
             "version": "==5.4.0"
         }
     },
-<<<<<<< Updated upstream
-    "develop": {}
-=======
     "develop": {
         "atomicwrites": {
             "hashes": [
@@ -401,19 +375,13 @@
             "markers": "python_version >= '3.5'",
             "version": "==22.1.0"
         },
-        "colorama": {
-            "hashes": [
-                "sha256:854bf444933e37f5824ae7bfc1e98d5bce2ebe4160d46b5edf346a89358e99da",
-                "sha256:e6c6b4334fc50988a639d9b98aa429a0b57da6e17b9a44f0451f930b6967b7a4"
-            ],
-            "markers": "platform_system == 'Windows'",
-            "version": "==0.4.5"
-        },
+
         "coverage": {
             "extras": [
                 "toml"
             ],
             "hashes": [
+
                 "sha256:04010af3c06ce2bfeb3b1e4e05d136f88d88c25f76cd4faff5d1fd84d11581ea",
                 "sha256:05de0762c1caed4a162b3e305f36cf20a548ff4da0be6766ad5c870704be3660",
                 "sha256:068d6f2a893af838291b8809c876973d885543411ea460f3e6886ac0ee941732",
@@ -457,7 +425,7 @@
                 "sha256:ff9832434a9193fbd716fbe05f9276484e18d26cc4cf850853594bb322807ac3"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==6.4.3"
+           
         },
         "iniconfig": {
             "hashes": [
@@ -523,5 +491,4 @@
             "version": "==2.0.1"
         }
     }
->>>>>>> Stashed changes
 }

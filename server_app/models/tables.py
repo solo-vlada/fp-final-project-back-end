@@ -51,3 +51,18 @@ class Offers(db.Model):
         self.user_id = user_id
         self.on_offer = on_offer
         self.images = images
+
+
+class Messages(db.Model):
+    message_id = db.Column(db.Integer, primary_key=True)
+    sender = db.Column(db.ForeignKey('user.id'))
+    receiver = db.Column(db.ForeignKey('user.id'))
+    message_text = db.Column(db.String(80), nullable=False)
+    message_date = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, message_text, message_date, sender, receiver):
+        self.message_text = message_text
+        self.message_date = message_date
+        self.sender = sender
+        self.receiver = receiver   
+

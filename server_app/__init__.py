@@ -8,9 +8,12 @@ from .routes.main import main_routes
 from .routes.auth import auth_routes
 from .models.tables import User
 
+from .database.db import db
+from .routes.main import main_routes
+from .routes.auth import auth_routes 
+
 #load environment variables
 load_dotenv()
-
 database_uri = environ.get('DATABASE_URL')
 
 if 'postgres:' in database_uri:
@@ -24,6 +27,7 @@ app.config.update(
 )
 app.config['SECRET_KEY']='004f2af45d3a4e161a7dd2d17fdae47f'
 
+
 CORS(app)
 db.app = app
 db.init_app(app)
@@ -34,4 +38,5 @@ app.register_blueprint(auth_routes, url_prefix='/auth')
 
 ## Main
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(environ.get("PORT", 5000))
+    app.run(debug=True, host='0.0.0.0', port=port) 
