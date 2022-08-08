@@ -90,7 +90,6 @@ def messenger_handling(user_id):
         content = request.json
         new_message = Messages(
             message_text=content['message_text'],
-            message_date=datetime.datetime.utcnow(),
             sender=user_id,
             receiver=content['receiver_id']
             )
