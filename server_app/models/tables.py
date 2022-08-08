@@ -50,4 +50,8 @@ class Offers(db.Model):
         self.size = size
         self.user_id = user_id
         self.on_offer = on_offer
+<<<<<<< Updated upstream
         self.images = images
+=======
+        self.images = images
+>>>>>>> Stashed changes
