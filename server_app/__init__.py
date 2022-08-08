@@ -32,8 +32,6 @@ app.config.update(
     SQLALCHEMY_DATABASE_URI=database_uri,
     SQLALCHEMY_TRACK_MODIFICATIONS=environ.get('SQLALCHEMY_TRACK_MODIFICATIONS')
 )
-<<<<<<< Updated upstream
-=======
 app.config['SECRET_KEY']='004f2af45d3a4e161a7dd2d17fdae47f'
 
 
