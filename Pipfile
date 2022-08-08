@@ -8,13 +8,9 @@ flask = "*"
 python-dotenv = "*"
 flask-cors = "*"
 flask-sqlalchemy = "*"
-<<<<<<< Updated upstream
-=======
-flask-jwt-extended = "*"
 pyjwt = "*"
 datetime = "*"
 uuid = "*"
->>>>>>> Stashed changes
 
 [dev-packages]
 

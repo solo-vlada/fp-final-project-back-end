@@ -1,18 +1,33 @@
-from flask import Blueprint, jsonify, make_response, request
+from flask import Blueprint, jsonify, make_response, request, current_app as app
 from werkzeug.security import generate_password_hash,check_password_hash
-from ...server_app import app
+from functools import wraps
+import jwt
+import uuid
+import datetime
 from ..database.db import db
 from ..models.tables import User
-import uuid
-import jwt
-import datetime
 
 auth_routes = Blueprint("auth", __name__)
 
-@auth_routes.route("/login", methods=['GET'])
-def login():
-    return "This could be a login page."
+# Creates a decorator for checking valid json web tokens
+def token_required(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        token = None
+        if 'x-access-tokens' in request.headers:
+            token = request.headers['x-access-tokens']
 
+        if not token:
+            return jsonify({'message': 'a valid token is missing'})
+        try:
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            current_user = User.query.filter_by(id=data['id']).first()
+        except:
+            return jsonify({'message': 'token is invalid'})
+        return f(current_user, *args, **kwargs)
+    return decorator
+
+# Regieter new user
 @auth_routes.route('/register', methods=['POST'])
 def signup_user(): 
    hashed_password = generate_password_hash(request.form['password'], method='sha256')
@@ -29,6 +44,7 @@ def signup_user():
    db.session.commit()   
    return jsonify({'message': 'registered successfully'})
 
+# Login to existing account
 @auth_routes.route('/login', methods=['POST']) 
 def login_user():
    auth = request.authorization  
