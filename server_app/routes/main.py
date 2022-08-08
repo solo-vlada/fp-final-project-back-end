@@ -21,6 +21,14 @@ def new_listing():
         db.session.add(new_item)
         db.session.commit()
 
+@main_routes.route("/test", methods=["GET", "POST"])
+def test(): 
+    if request.method == "GET":
+        new_item = Clothing(item_name="cool hat", description="red", category="hat", size="10", user_id=1, on_offer=False, images="imageurl")
+
+        db.session.add(new_item)
+        db.session.commit()
+
 @main_routes.errorhandler(exceptions.NotFound)
 def handle_404():
     return 'error: 404 Page not found', 404

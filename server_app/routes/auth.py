@@ -2,7 +2,6 @@ from flask import Blueprint, jsonify, make_response, request, current_app as app
 from werkzeug.security import generate_password_hash,check_password_hash
 from functools import wraps
 import jwt
-import uuid
 import datetime
 from ..database.db import db
 from ..models.tables import User
@@ -33,7 +32,6 @@ def signup_user():
    hashed_password = generate_password_hash(request.form['password'], method='sha256')
  
    new_user = User(
-    id=str(uuid.uuid4()), 
     username=request.form['username'], 
     password=hashed_password, 
     location=request.form['location'], 
@@ -53,7 +51,7 @@ def login_user():
  
    user = User.query.filter_by(username=auth.username).first()  
    if check_password_hash(user.password, auth.password):
-       token = jwt.encode({'public_id' : user.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
+       token = jwt.encode({'id' : user.id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
  
        return jsonify({'token' : token})
  

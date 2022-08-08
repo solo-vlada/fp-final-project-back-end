@@ -6,7 +6,6 @@ from os import environ
 from .database.db import db
 from .routes.main import main_routes
 from .routes.auth import auth_routes
-from .models.tables import User
 
 from .database.db import db
 from .routes.main import main_routes
