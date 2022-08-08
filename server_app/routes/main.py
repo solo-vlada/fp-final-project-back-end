@@ -4,21 +4,26 @@ from ..models.tables import Clothing
 
 main_routes = Blueprint("main", __name__)
 
-@main_routes.route("/", methods=["GET"])
-def index():
-    if request.method == "GET":
-        all_clothing = Clothing.query.all()
-        return jsonify(all_clothing)
-    else: 
-        pass
 
-@main_routes.route("/clothing")
-def clothing():
-    if request.method == "GET":
-        all_clothing = Clothing.query.all()
-        return jsonify(all_clothing)
-    else:
-        return jsonify({"message": "Method not allowed"})
+@main_routes.route("/")
+def index():
+    return jsonify({"message": "Hello World!"})
+
+# @main_routes.route("/", methods=["GET"])
+# def index():
+#     if request.method == "GET":
+#         all_clothing = Clothing.query.all()
+#         return jsonify(all_clothing)
+#     else: 
+#         pass
+
+# @main_routes.route("/clothing")
+# def clothing():
+#     if request.method == "GET":
+#         all_clothing = Clothing.query.all()
+#         return jsonify(all_clothing)
+#     else:
+#         return jsonify({"message": "Method not allowed"})
 
     # elif request.method == "POST":
     #     clothing = Clothing(
