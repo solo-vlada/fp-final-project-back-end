@@ -1,4 +1,3 @@
-from ast import Param
 from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
 from werkzeug.security import generate_password_hash,check_password_hash
 from sqlalchemy import or_
@@ -79,12 +78,21 @@ def get_all_users():
        result.append(user_data)  
    return jsonify({'users': result})
 
-@auth_routes.route('/msg<int:user_id>', methods=['GET', 'POST'])
+@auth_routes.route('/msg/<int:user_id>', methods=['GET', 'POST'])
 def messenger_handling(user_id):
     if request.method == 'GET':
         #  retrieve all messages sent by or too user
         all_messages = Messages.query.filter(or_(Messages.sender == user_id), (Messages.receiver == user_id))
-        pass
+
+        def message_serializer(message):
+            return {
+                "message_text": message.message_text,
+                "sender": message.sender,
+                "receiver": message.receiver
+            }
+
+        return jsonify({'Message\'s': [*map(message_serializer, all_messages)]})
+
     else:
         # expect message in json format with user_id and receiver_id as the sender and recipient
         content = request.json
