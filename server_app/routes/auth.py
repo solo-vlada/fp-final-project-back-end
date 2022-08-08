@@ -27,21 +27,22 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorator
 
-# Register new user
+# Register new user / expects json handled by frontend
 @auth_routes.route('/register', methods=['POST'])
 def register_user(): 
     try:
-        hashed_password = generate_password_hash(request.form['password'], method='sha256')
-        
+        content = request.json
+        hashed_password = generate_password_hash(content['password'], method='sha256')
+
         new_user = User(
-            username=request.form['username'], 
+            username=content['username'], 
             password=hashed_password, 
-            location=request.form['location'], 
-            email=request.form['email']
+            location=content['location'], 
+            email=content['email']
         )
 
-        db.session.add(new_user)
-        db.session.commit()   
+        # db.session.add(new_user)
+        # db.session.commit()   
         return jsonify({'message': 'registered successfully'})
     except:
         return jsonify({'message': 'registration unsuccessful'})
@@ -49,17 +50,18 @@ def register_user():
 # Login to existing account
 @auth_routes.route('/login', methods=['POST']) 
 def login_user():
-   auth = request.authorization  
-   if not auth or not auth.username or not auth.password: 
+
+    auth = request.authorization  
+    if not auth or not auth.username or not auth.password: 
        return make_response('could not verify', 401, {'Authentication': 'login required"'})   
  
-   user = User.query.filter_by(username=auth.username).first()  
-   if check_password_hash(user.password, auth.password):
+    user = User.query.filter_by(username=auth.username).first()  
+    if check_password_hash(user.password, auth.password):
        token = jwt.encode({'id' : user.id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
  
        return jsonify({'token' : token})
  
-   return make_response('could not verify',  401, {'Authentication': '"login required"'})
+    return make_response('could not verify',  401, {'Authentication': '"login required"'})
 
 # Test route reciive all users in json format
 @auth_routes.route('/users', methods=['GET'])
@@ -84,6 +86,7 @@ def messenger_handling(user_id):
         #  retrieve all messages sent by or too user
         all_messages = Messages.query.filter(or_(Messages.sender == user_id), (Messages.receiver == user_id))
 
+
         def message_serializer(message):
             return {
                 "message_text": message.message_text,
@@ -92,7 +95,6 @@ def messenger_handling(user_id):
             }
 
         return jsonify({'Message\'s': [*map(message_serializer, all_messages)]})
-
     else:
         # expect message in json format with user_id and receiver_id as the sender and recipient
         content = request.json
@@ -100,8 +102,7 @@ def messenger_handling(user_id):
             message_text=content['message_text'],
             sender=user_id,
             receiver=content['receiver_id']
-            )
+        )
 
         db.session.add(new_message)
         db.session.commit()
-        pass
