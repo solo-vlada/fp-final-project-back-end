@@ -5,7 +5,7 @@
 ## Description
 Have you ever wanted to get new clothes but don't know what to do with the old ones? Then this is the perfect place for you. Preloved is a website that allows you to search for clothes that you want to get new and get them for free.
 
-## Local Setup instructions
+# Local Setup instructions
 
 1. run `pipenv install` in the terminal to install all the dependencies
 2. run `pipenv install --dev` to install dev dependancies (if you want to examine the testing results and coverage)
@@ -15,12 +15,14 @@ Have you ever wanted to get new clothes but don't know what to do with the old o
 6. run `pipenv run coverage` to run the coverage report
 
 
-## API useage
-Here are some of the routes for using the API along with their expected received and sent data
+<hr>
+
+# API useage
+Here are the routes for using the API along with their expected receiving and sending data
 
 ## <ins>Main routes</ins>
 
-### Index/root url - `/`
+## Index/root url - `/`
 - Allowed methods:  
     - GET: Retrieves all from clothing items data, allowing for filtering via optional paramaters returning an array of JSON data. 
     <br> Exected response example: <br> 
