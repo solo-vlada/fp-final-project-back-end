@@ -52,7 +52,6 @@ class Offers(db.Model):
         self.on_offer = on_offer
         self.images = images
 
-
 class Messages(db.Model):
     message_id = db.Column(db.Integer, primary_key=True)
     sender = db.Column(db.ForeignKey('user.id'))
@@ -64,5 +63,4 @@ class Messages(db.Model):
         self.message_text = message_text
         self.message_date = message_date
         self.sender = sender
-        self.receiver = receiver   
-
+        self.receiver = receiver
