@@ -39,7 +39,7 @@ def index():
 
         db.session.add(new_clothing)
         db.session.commit()
-        return 'added clothing'
+        return {'message': 'added clothing'}
         
 
 @main_routes.route("/new-listing", methods=["POST"])
