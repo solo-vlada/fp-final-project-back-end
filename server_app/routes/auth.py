@@ -1,12 +1,10 @@
-from ast import Param
-from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
+from flask import Blueprint, jsonify, make_response, request, current_app as app
 from werkzeug.security import generate_password_hash,check_password_hash
-from sqlalchemy import or_
 from functools import wraps
 import jwt
 import datetime
 from ..database.db import db
-from ..models.tables import User, Messages
+from ..models.tables import User
 
 auth_routes = Blueprint("auth", __name__)
 
@@ -28,24 +26,21 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorator
 
-# Register new user
+# Regieter new user
 @auth_routes.route('/register', methods=['POST'])
-def register_user(): 
-    try:
-        hashed_password = generate_password_hash(request.form['password'], method='sha256')
-        
-        new_user = User(
-            username=request.form['username'], 
-            password=hashed_password, 
-            location=request.form['location'], 
-            email=request.form['email']
-        )
+def signup_user(): 
+   hashed_password = generate_password_hash(request.form['password'], method='sha256')
+ 
+   new_user = User(
+    username=request.form['username'], 
+    password=hashed_password, 
+    location=request.form['location'], 
+    email=request.form['email']
+    )
 
-        db.session.add(new_user)
-        db.session.commit()   
-        return jsonify({'message': 'registered successfully'})
-    except:
-        return jsonify({'message': 'registration unsuccessful'})
+   db.session.add(new_user)
+   db.session.commit()   
+   return jsonify({'message': 'registered successfully'})
 
 # Login to existing account
 @auth_routes.route('/login', methods=['POST']) 
@@ -63,37 +58,29 @@ def login_user():
    return make_response('could not verify',  401, {'Authentication': '"login required"'})
 
 # Test route reciive all users in json format
-@auth_routes.route('/users', methods=['GET'])
+@auth_routes.route('/users', methods=['GET', 'POST'])
 def get_all_users(): 
- 
-   users = User.query.all()
-   result = []  
-   for user in users:  
-       user_data = {}  
-       user_data['id'] = user.id 
-       user_data['username'] = user.username
-       user_data['password'] = user.password
-       user_data['location'] = user.location
-       user_data['email'] = user.email
-     
-       result.append(user_data)  
-   return jsonify({'users': result})
-
-@auth_routes.route('/msg<int:user_id>', methods=['GET', 'POST'])
-def messenger_handling(user_id):
     if request.method == 'GET':
-        #  retrieve all messages sent by or too user
-        all_messages = Messages.query.filter(or_(Messages.sender == user_id), (Messages.receiver == user_id))
-        pass
+        users = User.query.all()
+        result = []  
+        for user in users:  
+            user_data = {}  
+            user_data['id'] = user.id 
+            user_data['username'] = user.username
+            user_data['password'] = user.password
+            user_data['location'] = user.location
+            user_data['email'] = user.email
+            
+            result.append(user_data)  
+        return jsonify({'users': result})
     else:
-        # expect message in json format with user_id and receiver_id as the sender and recipient
-        content = request.json
-        new_message = Messages(
-            message_text=content['message_text'],
-            sender=user_id,
-            receiver=content['receiver_id']
-            )
 
-        db.session.add(new_message)
+        new_user = User(
+            username='michael',
+            password='test',
+            email='test@test.com',
+            location='New York'
+        )
+        db.session.add(new_user)
         db.session.commit()
-        pass
+        return jsonify({'message': 'new user added'})
