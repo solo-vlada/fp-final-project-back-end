@@ -43,9 +43,9 @@ def register_user():
 
         # db.session.add(new_user)
         # db.session.commit()   
-        return jsonify({'message': 'registered successfully'})
+        return jsonify({'message': 'registered successfully'}), 201
     except:
-        return jsonify({'message': 'registration unsuccessful'})
+        return jsonify({'message': 'registration unsuccessful'}), 400
 
 # Login to existing account
 @auth_routes.route('/login', methods=['POST']) 
