@@ -7,7 +7,7 @@ main_routes = Blueprint("main", __name__)
 
 @main_routes.route("/")
 def index():
-    return jsonify({"message": "Hello World!"})
+    return jsonify({"message": "Hello World!"}) 
 
 # @main_routes.route("/", methods=["GET"])
 # def index():
