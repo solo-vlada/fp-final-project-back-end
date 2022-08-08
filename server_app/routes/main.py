@@ -24,7 +24,7 @@ def index():
     if request.method == "GET":
         all_clothing = Clothing.query.all()
         print(type(all_clothing))
-        return jsonify([*map(clothing_serializer, all_clothing)])
+        return jsonify([*map(clothing_serializer, all_clothing)]), 200
     else:
 
         item_name = 'item 1'
@@ -39,7 +39,7 @@ def index():
 
         db.session.add(new_clothing)
         db.session.commit()
-        return 'added clothing'
+        return jsonify({"added clothing": new_clothing}), 201
         
 
 @main_routes.route("/new-listing", methods=["POST"])

@@ -97,8 +97,8 @@ def messenger_handling(user_id):
                     "sender": message.sender,
                     "receiver": message.receiver
                 }
-
-            return jsonify({'Message\'s': [*map(message_serializer, all_messages)]}), 200
+                
+            return jsonify({'Messages': [*map(message_serializer, all_messages)]}), 200
         except:
             return jsonify({'Error': 'Cannot retrieve message\'s from non-existent user'}), 404
     else:

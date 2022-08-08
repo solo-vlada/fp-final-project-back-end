@@ -22,31 +22,47 @@ Here are some of the routes for using the API along with their expected received
 
 ### Index/root url - `/`
 - Allowed methods:  
-    - GET: Retrieves all from clothing items data, allowing for filtering via optional paramaters returning the data within JSON.
+    - GET: Retrieves all from clothing items data, allowing for filtering via optional paramaters returning an array of JSON data. 
+    <br> Exected response example: <br> 
+    ```JSON
+    [{
+        "category": "t-shirt",
+        "description": "cool t-shirt",
+        "id": 1, // id of item
+        "images": "url_to_item_images",
+        "item_name": "item 1",
+        "on_offer": false,
+        "size": "M",
+        "user_id": 1 // id of user who created item
+    },]
+    ```
 
-### Create new list item - `/new-listing`
+## Create new list item - `/new-listing`
 - Allowed methods: 
-    - POST: Creates new `clothing_item` database entry from Form request expecting the following valid fields:  <br> 
+    - POST: Creates new `clothing_item` database entry from Form request. 
+    <br>Expects the following valid fields:  <br> 
     `'item_name', 'item_desc', 'item_cat', 'item_size', 'item_user_id', 'item_images'`
 
 ## <ins>Auth routes</ins>
 
-### Register - `/auth/register`
+## Register - `/auth/register`
 - Allowed methods:  
     - POST: Creates new `user` database entry from JSON request expecting the following keys: <br> 
     `'username', 'password', 'email', 'location'`
 
-### Login - `/auth/login`
+## Login - `/auth/login`
 - Allowed methods:  
-    - POST: Searches through database for valid `user` to login and return `JWT`. Request is expected to contain the following keys within a basic auth: <br> 
+    - POST: Searches through database for valid `user` to login and return `JWT`. 
+    <br> Request is expected to contain the following keys within a basic auth: <br> 
     `'username', 'password'`, no JSON or body is required
 
 
-### See users - `/auth/users`
+## Return all users - `/auth/users`
+`TESTING PURPOSES` do not use in production
 - Allowed methods:  
-    - GET: Searches through database for all `user` entries and returns them in JSON. Exected response example: <br> 
+    - GET: Searches through database for all `user` entries and returns them in JSON.  <br> Exected response example: <br> 
 
-    ```javascript
+    ```JSON
     {"users": [
         {
         "email": "test@test.com",
@@ -58,6 +74,27 @@ Here are some of the routes for using the API along with their expected received
     ]}
     ```
 
-   
-   
- 
+## Message another user - `/auth/msg/<int:user_id>`
+Url contains paramater of `user_id` that is used to both send and retrieve messages, can be found in `JWT`.
+
+- Allowed methods:  
+    - GET: Retrieve all messages sent by or too `user` and returns them in JSON.  
+    Exected JSON response example: <br> 
+    ```JSON
+    {"Messages": [
+		{
+			"message_text": "Hello world",
+			"receiver": 2, // user id - recipient of message
+			"sender": 1 // user id - sender of message
+		},
+    ]}
+    ```
+    - POST: Create new entry within the `message` database.
+    <br> Expect message in JSON format with the following keys: <br> 
+    ```JSON
+    {
+        "message_text": "Hello world",
+        "user_id": 1, // user id - sender of message
+        "receiver_id": 2 // user id - recipient of message
+    }
+    ```
