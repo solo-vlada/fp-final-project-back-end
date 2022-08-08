@@ -8,8 +8,11 @@ flask = "*"
 python-dotenv = "*"
 flask-cors = "*"
 flask-sqlalchemy = "*"
+
 pyjwt = "*"
 datetime = "*"
+psycopg2 = "*"
+gunicorn = "*"
 
 [dev-packages]
 pytest = "*"
@@ -24,4 +27,3 @@ dev = "flask run -p ${PORT}"
 start = "gunicorn server_app:app --bind 0.0.0.0:${PORT}"
 test="pytest ."
 test_coverage="pytest --cov-report term-missing --cov=."
-
