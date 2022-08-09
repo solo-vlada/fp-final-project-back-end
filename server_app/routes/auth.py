@@ -6,8 +6,7 @@ import uuid
 import jwt
 import datetime
 from ..database.db import db
-from ..models.tables import User, Messages
-from flask_login import login_user, logout_user, current_user, login_required, LoginManager, UserMixin
+from ..models.tables import User, Messages, Clothing, Offers
 
 auth_routes = Blueprint("auth", __name__)
 
@@ -56,7 +55,7 @@ def register_user():
 def login_user():
 
     # Check that login request was sent with basic auth
-    auth = request.authorization  
+    auth = request.authorization
     if not auth or not auth.username or not auth.password: 
         return make_response('could not verify basic auth', 401, {'Authentication': 'login required"'})   
     
@@ -69,24 +68,21 @@ def login_user():
      
     return jsonify('could not verify'), 401
 
-# Test route reciive all users in json format
-@auth_routes.route('/users', methods=['GET'])
-def get_all_users():
+# Create new clothes item on database
+@auth_routes.route("/new-listing", methods=["POST"])
+# @token_required
+def new_listing(): 
+    if request.method == "POST":
+        content = request.json
+        new_item = Clothing(item_name=content['item_name'], description=content['item_desc'], category=content['item_cat'], size=content['item_size'], user_id=content['item_user_id'], on_offer=False, images=content['item_images'])
 
-    users = User.query.all()
-    result = []  
-    for user in users:  
-        user_data = {}  
-        user_data['id'] = user.id 
-        user_data['username'] = user.username
-        user_data['password'] = user.password
-        user_data['location'] = user.location
-        user_data['email'] = user.email
-        
-        result.append(user_data)  
-    return jsonify({'users': result})
+        db.session.add(new_item)
+        db.session.commit()
+        return jsonify({"added clothing": f'{new_item}'}), 201
 
+# Send messages between users
 @auth_routes.route('/msg/<string:user_id>', methods=['GET', 'POST'])
+@token_required
 def messenger_handling(user_id):
     if request.method == 'GET':
         try:
@@ -118,3 +114,71 @@ def messenger_handling(user_id):
             return jsonify({'Message sent': new_message.message_text}), 201
         except:
             return jsonify({'Error': 'Cannot send message to non-existent user'}), 404
+
+# Propose a swap and assign items to register intent
+@auth_routes.route('/create_swap/<string:user_id>', methods=['POST'])
+def create_swap(user_id):
+    if request.method == "POST":
+        def swap_serializer(swap):
+            return {
+                "proposer": swap.proposer,
+                "proposer_item_id": swap.proposer_item_id,
+                "reciever": swap.reciever,
+                "reciever_item_id": swap.reciever_item_id,
+                "offer_status": swap.offer_status,
+            }
+        try:
+            content = request.json
+            swap_entry = Offers(
+                proposer = str(user_id),
+                proposer_item_id = content['proposer_item_id'],
+                reciever = str(content['reciever']),
+                reciever_item_id =content['reciever_item_id'],
+                offer_status = "pending"
+            )
+
+            db.session.add(swap_entry)
+
+            proposed_item = Clothing.query.get(content['proposer_item_id'])
+            proposed_item.on_offer = True
+
+            db.session.commit()
+
+            return jsonify(swap_serializer(swap_entry)), 201
+        except:
+            return jsonify({'Error': 'Cannot swap with non-existent user'}), 404
+
+# Test route recieve all users in json format
+@auth_routes.route('/users', methods=['GET'])
+def get_all_users():
+
+    users = User.query.all()
+    result = []  
+    for user in users:  
+        user_data = {}  
+        user_data['id'] = user.id 
+        user_data['username'] = user.username
+        user_data['password'] = user.password
+        user_data['location'] = user.location
+        user_data['email'] = user.email
+        
+        result.append(user_data)  
+    return jsonify({'users': result})
+
+# Test route recieve all offers in json format
+@auth_routes.route('/offers', methods=['GET'])
+def get_all_offers():
+
+    offers = Offers.query.all()
+    result = []  
+    for offer in offers:  
+        offer_data = {}  
+        offer_data['id'] = offer.id 
+        offer_data['proposer'] = offer.proposer
+        offer_data['proposer_item_id'] = offer.proposer_item_id
+        offer_data['reciever'] = offer.reciever
+        offer_data['reciever_item_id'] = offer.reciever_item_id
+        offer_data['offer_status'] = offer.offer_status
+        
+        result.append(offer_data)  
+    return jsonify({'offers': result})

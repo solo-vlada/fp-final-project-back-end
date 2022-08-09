@@ -1,6 +1,5 @@
 from email.policy import default
 from ..database.db import db
-import json
 import datetime
 from flask_login import UserMixin
 
@@ -39,22 +38,19 @@ class User(db.Model):
 
 class Offers(db.Model):
     offer_id = db.Column(db.Integer, primary_key=True)
-    proposer = db.Column(db.String(80), db.ForeignKey('user.id'))
-    reciever = db.Column(db.ForeignKey('user.id'))
-    offer_status = db.Column(db.Boolean, nullable=False)
-    offer_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow()) #proposed extra columns for offer table
+    proposer = db.Column(db.ForeignKey('user.id'))
     proposer_item_id = db.Column(db.Integer, db.ForeignKey('clothing.id'))
+    reciever = db.Column(db.ForeignKey('user.id'))
     reciever_item_id = db.Column(db.Integer, db.ForeignKey('clothing.id'))
+    offer_status = db.Column(db.String(80), nullable=False)
+    offer_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow()) #proposed extra columns for offer table
 
-
-    def __init__(self, item_name, description, category, size, user_id, on_offer, images):
-        self.item_name = item_name
-        self.description = description
-        self.category = category
-        self.size = size
-        self.user_id = user_id
-        self.on_offer = on_offer
-        self.images = images
+    def __init__(self, proposer, proposer_item_id, reciever, reciever_item_id, offer_status):
+        self.proposer = proposer,
+        self.proposer_item_id = proposer_item_id,
+        self.reciever = reciever,
+        self.reciever_item_id = reciever_item_id,
+        self.offer_status = offer_status,    
 
 class Messages(db.Model):
     message_id = db.Column(db.Integer, primary_key=True)

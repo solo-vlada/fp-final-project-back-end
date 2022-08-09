@@ -19,38 +19,26 @@ def clothing_serializer(clothing):
         "images": clothing.images
     }
 
-@main_routes.route("/", methods=["GET", "POST"])
+@main_routes.route("/", methods=["GET"])
 def index(): 
     if request.method == "GET":
-        all_clothing = Clothing.query.all()
-        print(type(all_clothing))
+        category_filter = request.args.get('category', default=None, type=str)
+        all_clothing = None
+
+        if category_filter is not None:
+            print(category_filter)
+            all_clothing = Clothing.query.filter_by(category = category_filter)
+        else:
+            print(category_filter)
+            all_clothing = Clothing.query.all()
+
         return jsonify([*map(clothing_serializer, all_clothing)]), 200
-    else:
 
-        item_name = 'item 1'
-        description = "cool item t-shirt"
-        category = "t-shirt"
-        size = "M"
-        user_id = "1"
-        on_offer = False
-        images = "http:google.com"
-
-        new_clothing = Clothing(item_name=item_name, description=description, category=category, size=size, user_id=user_id, on_offer=on_offer, images=images)
-
-        db.session.add(new_clothing)
-        db.session.commit()
-        return jsonify({"added clothing": new_clothing}), 201
-        
-
-@main_routes.route("/new-listing", methods=["POST"])
-def new_listing(): 
-    if request.method == "POST":
-        content = request.json
-        new_item = Clothing(item_name=content['item_name'], description=content['item_desc'], category=content['item_cat'], size=content['item_size'], user_id=content['item_user_id'], on_offer=False, images=content['item_images'])
-
-        db.session.add(new_item)
-        db.session.commit()
-        return jsonify({"added clothing": f'{new_item}'}), 201
+@main_routes.route("/<string:user_id>", methods=["GET"])
+def personal_listings(user_id):
+    if request.method == "GET":
+        users_listings = Clothing.query.filter_by(user_id = user_id)
+        return jsonify([*map(clothing_serializer, users_listings)]), 200
 
 @main_routes.errorhandler(exceptions.NotFound)
 def handle_404():
