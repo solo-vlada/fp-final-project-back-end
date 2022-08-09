@@ -35,7 +35,7 @@ Here are the routes for using the API along with their expected receiving and se
         "item_name": "item 1",
         "on_offer": false,
         "size": "M",
-        "user_id": 1 // id of user who created item
+        "user_id": "1a2b3c" // id of user who created item
     },]
     ```
 
@@ -68,7 +68,7 @@ Here are the routes for using the API along with their expected receiving and se
     {"users": [
         {
         "email": "test@test.com",
-        "id": 1,
+        "id": "1a2b3c",
         "location": "New York",
         "password": "test",
         "username": "michael"
@@ -76,8 +76,8 @@ Here are the routes for using the API along with their expected receiving and se
     ]}
     ```
 
-## Message another user - `/auth/msg/<int:user_id>`
-Url contains paramater of `user_id` that is used to both send and retrieve messages, can be found in `JWT`.
+## Message another user - `/auth/msg/<string:user_id>`
+Url contains paramater of `user_id` that is used to both send and retrieve messages, is sent to local storage along with `JWT`.
 
 - Allowed methods:  
     - GET: Retrieve all messages sent by or too `user` and returns them in JSON.  
@@ -86,8 +86,8 @@ Url contains paramater of `user_id` that is used to both send and retrieve messa
     {"Messages": [
 		{
 			"message_text": "Hello world",
-			"receiver": 2, // user id - recipient of message
-			"sender": 1 // user id - sender of message
+			"receiver": "1a2b3c", // user id - recipient of message
+			"sender": "4e5f6h" // user id - sender of message
 		},
     ]}
     ```
@@ -96,7 +96,7 @@ Url contains paramater of `user_id` that is used to both send and retrieve messa
     ```JSON
     {
         "message_text": "Hello world",
-        "user_id": 1, // user id - sender of message
-        "receiver_id": 2 // user id - recipient of message
+        "user_id": "1a2b3c", // user id - sender of message
+        "receiver_id": "4e5f6h" // user id - recipient of message
     }
     ```

@@ -83,7 +83,7 @@ def get_all_users():
         result.append(user_data)  
     return jsonify({'users': result})
 
-@auth_routes.route('/msg/<int:user_id>', methods=['GET', 'POST'])
+@auth_routes.route('/msg/<string:user_id>', methods=['GET', 'POST'])
 def messenger_handling(user_id):
     if request.method == 'GET':
         try:

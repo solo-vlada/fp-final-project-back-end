@@ -21,9 +21,6 @@ class Clothing(db.Model):
         self.user_id = user_id
         self.on_offer = on_offer
         self.images = images
-    
-    # def __getitem__(self, item_name, description, category, size, user_id, on_offer, images):
-    #     print (item_name, description, category, size, user_id, on_offer, images)
 
 class User(db.Model):
     id = db.Column(db.String(80), primary_key=True)
@@ -40,8 +37,8 @@ class User(db.Model):
         self.location = location
 
 class Offers(db.Model):
-    offer_id = db.Column(db.Integer, primary_key=True)
-    proposer = db.Column(db.ForeignKey('user.id'))
+    offer_id = db.Column(db.String(80), db.Integer, primary_key=True)
+    proposer = db.Column(db.String(80), db.ForeignKey('user.id'))
     reciever = db.Column(db.ForeignKey('user.id'))
     offer_status = db.Column(db.Boolean, nullable=False)
     offer_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow()) #proposed extra columns for offer table
