@@ -22,7 +22,16 @@ def clothing_serializer(clothing):
 @main_routes.route("/", methods=["GET"])
 def index(): 
     if request.method == "GET":
-        all_clothing = Clothing.query.all()
+        category_filter = request.args.get('category', default=None, type=str)
+        all_clothing = None
+
+        if category_filter is not None:
+            print(category_filter)
+            all_clothing = Clothing.query.filter_by(category = category_filter)
+        else:
+            print(category_filter)
+            all_clothing = Clothing.query.all()
+
         return jsonify([*map(clothing_serializer, all_clothing)]), 200
 
 @main_routes.route("/<string:user_id>", methods=["GET"])
