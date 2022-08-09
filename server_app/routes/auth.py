@@ -1,5 +1,6 @@
 from re import A
 from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
+from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash,check_password_hash
 from sqlalchemy import or_
 from functools import wraps
@@ -30,6 +31,7 @@ def token_required(f):
 
 # Register new user / expects json post handled by frontend
 @auth_routes.route('/register', methods=['POST'])
+@cross_origin()
 def register_user(): 
     try:
         content = request.json
