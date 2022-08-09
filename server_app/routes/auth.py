@@ -1,8 +1,7 @@
-from re import A
 from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
 from werkzeug.security import generate_password_hash,check_password_hash
-from sqlalchemy import or_
 from functools import wraps
+import uuid
 import jwt
 import datetime
 from ..database.db import db
@@ -36,10 +35,11 @@ def register_user():
         hashed_password = generate_password_hash(content['password'], method='sha256')
 
         new_user = User(
-            username=content['username'], 
-            password=hashed_password, 
-            location=content['location'], 
-            email=content['email']
+            id = uuid.uuid1(),
+            username = content['username'], 
+            password = hashed_password, 
+            location = content['location'], 
+            email = content['email']
         )
 
         db.session.add(new_user)
@@ -68,20 +68,20 @@ def login_user():
 
 # Test route reciive all users in json format
 @auth_routes.route('/users', methods=['GET'])
-def get_all_users(): 
- 
-   users = User.query.all()
-   result = []  
-   for user in users:  
-       user_data = {}  
-       user_data['id'] = user.id 
-       user_data['username'] = user.username
-       user_data['password'] = user.password
-       user_data['location'] = user.location
-       user_data['email'] = user.email
-     
-       result.append(user_data)  
-   return jsonify({'users': result})
+def get_all_users():
+
+    users = User.query.all()
+    result = []  
+    for user in users:  
+        user_data = {}  
+        user_data['id'] = user.id 
+        user_data['username'] = user.username
+        user_data['password'] = user.password
+        user_data['location'] = user.location
+        user_data['email'] = user.email
+        
+        result.append(user_data)  
+    return jsonify({'users': result})
 
 @auth_routes.route('/msg/<int:user_id>', methods=['GET', 'POST'])
 def messenger_handling(user_id):

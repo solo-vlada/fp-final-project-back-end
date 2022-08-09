@@ -26,13 +26,14 @@ class Clothing(db.Model):
     #     print (item_name, description, category, size, user_id, on_offer, images)
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(80), primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(80), nullable=False)
     location = db.Column(db.String(80), nullable=False)
 
-    def __init__(self, username, password, email, location):
+    def __init__(self, id, username, password, email, location):
+        self.id = id
         self.username = username
         self.password = password
         self.email = email
