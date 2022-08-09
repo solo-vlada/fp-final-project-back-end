@@ -6,6 +6,7 @@ import jwt
 import datetime
 from ..database.db import db
 from ..models.tables import User, Messages
+from flask_login import login_user, logout_user, current_user, login_required, LoginManager, UserMixin
 
 auth_routes = Blueprint("auth", __name__)
 
@@ -41,10 +42,17 @@ def user_serialiser(user):
 @auth_routes.route('/users', methods=['GET', 'POST'])
 def get_users():
     if request.method == 'GET':
+
+        # create a variable to hold the users queried from the database
         all_users = User.query.all()
-        return jsonify([*map(user_serialiser, all_users)])
+
+        # use * to unpack the list of users, map to serialise each user. user_serialiser is a function that serialises each element of the user model
+        return jsonify([*map(user_serialiser, all_users)])  
+
     elif request.method == 'POST':
-        new_user = User(
+
+        # create a new user object from the request form data
+        new_user = User( 
             username=request.json['username'],
             password=generate_password_hash(request.json['password'], method='sha256'),
             location=request.json['location'],
@@ -59,8 +67,21 @@ def get_user(id):
         user = User.query.get(id)
         return jsonify(user_serialiser(user))
 
+
+# ********************* verify Login *********************
+
+# flask_login login_user function is used to login a user
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
 # Login to existing account
-@auth_routes.route('/login', methods=['POST']) 
+@auth_routes.route('/login', methods=['POST'])
 def login_user():
 
     auth = request.authorization  
@@ -75,5 +96,7 @@ def login_user():
  
     return make_response('could not verify',  401, {'Authentication': '"login required"'})
 
-# ********************* get all messages *********************
+
+
+
 

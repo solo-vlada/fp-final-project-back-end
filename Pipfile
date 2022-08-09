@@ -12,6 +12,7 @@ pyjwt = "*"
 datetime = "*"
 psycopg2 = "*"
 gunicorn = "*"
+flask-login = "*"
 
 [dev-packages]
 pytest = "*"
