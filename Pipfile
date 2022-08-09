@@ -12,6 +12,8 @@ pyjwt = "*"
 datetime = "*"
 psycopg2 = "*"
 gunicorn = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [dev-packages]
 pytest = "*"

@@ -1,5 +1,5 @@
 from warnings import catch_warnings
-import pytest, requests, json
+import pytest, json
 from ..routes.main import index
 from unittest import mock
 
