@@ -52,20 +52,19 @@ def register_user():
 @auth_routes.route('/login', methods=['POST']) 
 def login_user():
 
-    try:
-        # Check that login request was sent with basic auth
-        auth = request.authorization  
-        if not auth or not auth.username or not auth.password: 
-            return make_response('could not verify basic auth', 401, {'Authentication': 'login required"'})   
+    # Check that login request was sent with basic auth
+    auth = request.authorization  
+    if not auth or not auth.username or not auth.password: 
+        return make_response('could not verify basic auth', 401, {'Authentication': 'login required"'})   
     
-        user = User.query.filter_by(username=auth.username).first()  
-        if check_password_hash(user.password, auth.password):
-        # if user.password == auth.password:
-            token = jwt.encode({'id': user.id, 'username': user.username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
-    
-            return jsonify({'token': token}), 200
-    except: 
-        return jsonify('could not verify', 401, {'Authentication': '"login required"'})
+    user = User.query.filter_by(username=auth.username).first()  
+    if check_password_hash(user.password, auth.password):
+    # if user.password == auth.password:
+        token = jwt.encode({'id': user.id, 'username': user.username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
+
+        return jsonify({'token': token}), 200
+     
+    return jsonify('could not verify'), 401
 
 # Test route reciive all users in json format
 @auth_routes.route('/users', methods=['GET'])
