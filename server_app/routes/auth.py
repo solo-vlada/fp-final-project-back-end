@@ -35,7 +35,7 @@ def register_user():
         hashed_password = generate_password_hash(content['password'], method='sha256')
 
         new_user = User(
-            id = uuid.uuid1(),
+            id = f'{uuid.uuid1()}',
             username = content['username'], 
             password = hashed_password, 
             location = content['location'], 
