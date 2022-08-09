@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
+from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash,check_password_hash
 from functools import wraps
 import uuid
@@ -29,6 +30,7 @@ def token_required(f):
 
 # Register new user / expects json post handled by frontend
 @auth_routes.route('/register', methods=['POST'])
+@cross_origin()
 def register_user(): 
     try:
         content = request.json
@@ -60,7 +62,7 @@ def login_user():
     user = User.query.filter_by(username=auth.username).first()  
     if check_password_hash(user.password, auth.password):
     # if user.password == auth.password:
-        token = jwt.encode({'id': user.id, 'username': user.username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256")
+        token = jwt.encode({'id': user.id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256"), {"user_id": user.id, "username": user.username}
 
         return jsonify({'token': token}), 200
      

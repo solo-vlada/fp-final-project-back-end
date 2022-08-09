@@ -45,10 +45,12 @@ def index():
 @main_routes.route("/new-listing", methods=["POST"])
 def new_listing(): 
     if request.method == "POST":
-        new_item = Clothing(item_name=request.form['item_name'], description=request.form['item_desc'], category=request.form['item_cat'], size=request.form['item_size'], user_id=request.form['item_user_id'], on_offer=False, images=request.form['item_images'])
+        content = request.json
+        new_item = Clothing(item_name=content['item_name'], description=content['item_desc'], category=content['item_cat'], size=content['item_size'], user_id=content['item_user_id'], on_offer=False, images=content['item_images'])
 
         db.session.add(new_item)
         db.session.commit()
+        return jsonify({"added clothing": f'{new_item}'}), 201
 
 @main_routes.errorhandler(exceptions.NotFound)
 def handle_404():
