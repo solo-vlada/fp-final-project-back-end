@@ -9,7 +9,7 @@ class Clothing(db.Model):
     description = db.Column(db.String(80), nullable=False)
     category = db.Column(db.String(80), nullable=False)
     size = db.Column(db.String(80), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.String(80), db.ForeignKey('user.id'))
     on_offer = db.Column(db.Boolean, default=False, nullable=False)
     images = db.Column(db.String(500), nullable=True)
 
@@ -24,7 +24,7 @@ class Clothing(db.Model):
 
 class User(db.Model):
     id = db.Column(db.String(80), primary_key=True)
-    username = db.Column(db.String(80), nullable=False)
+    username = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(300), nullable=False)
     email = db.Column(db.String(80), nullable=False)
     location = db.Column(db.String(80), nullable=False)
@@ -37,7 +37,7 @@ class User(db.Model):
         self.location = location
 
 class Offers(db.Model):
-    offer_id = db.Column(db.String(80), db.Integer, primary_key=True)
+    offer_id = db.Column(db.Integer, primary_key=True)
     proposer = db.Column(db.String(80), db.ForeignKey('user.id'))
     reciever = db.Column(db.ForeignKey('user.id'))
     offer_status = db.Column(db.Boolean, nullable=False)
