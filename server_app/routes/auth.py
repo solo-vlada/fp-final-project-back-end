@@ -51,26 +51,8 @@ def register_user():
     except:
         return jsonify({'message': 'registration unsuccessful'}), 400
 
-<<<<<<< HEAD
-
-# ********************* verify Login *********************
-
-# flask_login login_user function is used to login a user
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'auth.login'
-
-@login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
-
-# Login to existing account
-@auth_routes.route('/login', methods=['POST'])
-=======
 # Login to existing account / expects basic auth containing the username and password
 @auth_routes.route('/login', methods=['POST']) 
->>>>>>> 79fea7b56df85d15e3805c2dd926712f0239619c
 def login_user():
 
     # Check that login request was sent with basic auth
@@ -83,15 +65,9 @@ def login_user():
     # if user.password == auth.password:
         token = jwt.encode({'id': user.id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=45)}, app.config['SECRET_KEY'], "HS256"), {"user_id": user.id, "username": user.username}
 
-<<<<<<< HEAD
-
-
-
-=======
         return jsonify({'token': token}), 200
      
     return jsonify('could not verify'), 401
->>>>>>> 79fea7b56df85d15e3805c2dd926712f0239619c
 
 # Test route reciive all users in json format
 @auth_routes.route('/users', methods=['GET'])
