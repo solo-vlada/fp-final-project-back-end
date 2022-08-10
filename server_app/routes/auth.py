@@ -73,7 +73,7 @@ def login_user():
 # Create new clothes item on database
 @auth_routes.route("/new-listing", methods=["POST"])
 @token_required
-def new_listing(): 
+def new_listing(current_user): 
     if request.method == "POST":
         content = request.json
         new_item = Clothing(item_name=content['item_name'], description=content['item_desc'], category=content['item_cat'], size=content['item_size'], user_id=content['item_user_id'], on_offer=False, images=content['item_images'])
