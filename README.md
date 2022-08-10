@@ -85,6 +85,8 @@ Url contains paramater of `user_id` that is used to both send and retrieve messa
     ```JSON
     {"Messages": [
 		{
+            "message_id": 1,
+            "message_date" : "datetime",
 			"message_text": "Hello world",
 			"receiver": "1a2b3c", // user id - recipient of message
 			"sender": "4e5f6h" // user id - sender of message

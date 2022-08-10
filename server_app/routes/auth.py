@@ -22,9 +22,7 @@ def token_required(f):
             return jsonify({'message': 'a valid token is missing'})
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-            # print(data)
             current_user = User.query.filter_by(id=data['id']).first()
-            print(current_user)
         except:
             return jsonify({'message': 'token is invalid'})
         return f(current_user, *args, **kwargs)
@@ -96,14 +94,14 @@ def messenger_handling(current_user):
                 sender = User.query.filter(User.id == message.sender).first()
                 reciever  =User.query.filter(User.id == message.receiver).first()
                 return {
+                    "message_id": message.message_id,
+                    "message_date" : message.message_date,
                     "message_text": message.message_text,
                     "sender": message.sender,
                     "receiver": message.receiver,
                     "sender_name": sender.username,
                     "receiver_name": reciever.username
                 }
-            
-                
             return jsonify({'Messages': [*map(message_serializer, all_messages)]}), 200
         except:
             return jsonify({'Error': 'Cannot retrieve message\'s from non-existent user'}), 404
@@ -126,8 +124,8 @@ def messenger_handling(current_user):
             return jsonify({'Error': 'Cannot send message to non-existent user'}), 404
 
 # Propose a swap and assign items to register intent
-@auth_routes.route('/create_swap/<string:user_id>', methods=['POST'])
-def create_swap(user_id):
+@auth_routes.route('/create-swap', methods=['POST'])
+def create_swap(current_user):
     if request.method == "POST":
         def swap_serializer(swap):
             return {
@@ -140,9 +138,9 @@ def create_swap(user_id):
         try:
             content = request.json
             swap_entry = Offers(
-                proposer = str(user_id),
+                proposer = current_user,
                 proposer_item_id = content['proposer_item_id'],
-                reciever = str(content['reciever']),
+                reciever = content['reciever'],
                 reciever_item_id =content['reciever_item_id'],
                 offer_status = "pending"
             )
@@ -178,17 +176,24 @@ def get_all_users():
 # Test route recieve all offers in json format
 @auth_routes.route('/offers', methods=['GET'])
 def get_all_offers():
+    offers = None
+    try:
+        user_offers = request.args.get('user', default=None, type=str)
+        if user_offers is not None:
+            offers = Offers.query.filter_by(proposer = user_offers, reciever= user_offers)
+        else:
+            offers = Offers.query.all()
 
-    offers = Offers.query.all()
-    result = []  
-    for offer in offers:  
-        offer_data = {}  
-        offer_data['id'] = offer.id 
-        offer_data['proposer'] = offer.proposer
-        offer_data['proposer_item_id'] = offer.proposer_item_id
-        offer_data['reciever'] = offer.reciever
-        offer_data['reciever_item_id'] = offer.reciever_item_id
-        offer_data['offer_status'] = offer.offer_status
-        
-        result.append(offer_data)  
-    return jsonify({'offers': result})
+        results = []
+        for offer in offers:  
+            offer_data = {}  
+            offer_data['id'] = offer.id 
+            offer_data['proposer'] = offer.proposer
+            offer_data['proposer_item_id'] = offer.proposer_item_id
+            offer_data['reciever'] = offer.reciever
+            offer_data['reciever_item_id'] = offer.reciever_item_id
+            offer_data['offer_status'] = offer.offer_status
+            
+            results.append(offer_data)  
+    except:
+        return jsonify({'offers': results})
