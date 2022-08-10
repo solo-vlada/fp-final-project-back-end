@@ -125,6 +125,7 @@ def messenger_handling(current_user):
 
 # Propose a swap and assign items to register intent
 @auth_routes.route('/create-swap', methods=['POST'])
+@token_required
 def create_swap(current_user):
     if request.method == "POST":
         def swap_serializer(swap):
