@@ -22,11 +22,13 @@ def token_required(f):
             return jsonify({'message': 'a valid token is missing'})
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+            # print(data)
             current_user = User.query.filter_by(id=data['id']).first()
+            print(current_user)
         except:
             return jsonify({'message': 'token is invalid'})
         return f(current_user, *args, **kwargs)
-    return decorator
+    return decorator    
 
 # Register new user / expects json post handled by frontend
 @auth_routes.route('/register', methods=['POST'])
@@ -70,7 +72,7 @@ def login_user():
 
 # Create new clothes item on database
 @auth_routes.route("/new-listing", methods=["POST"])
-# @token_required
+@token_required
 def new_listing(): 
     if request.method == "POST":
         content = request.json
@@ -81,20 +83,26 @@ def new_listing():
         return jsonify({"added clothing": f'{new_item}'}), 201
 
 # Send messages between users
-@auth_routes.route('/msg/<string:user_id>', methods=['GET', 'POST'])
+@auth_routes.route('/msg', methods=['GET', 'POST'])
 @token_required
-def messenger_handling(user_id):
+def messenger_handling(current_user):
     if request.method == 'GET':
         try:
             #  retrieve all messages sent by or too user
-            all_messages = Messages.query.filter(Messages.sender == user_id and Messages.receiver == user_id )
+            # user_filter = request.args.get('user_id', default=None, type=str)
+            all_messages = Messages.query.filter(Messages.sender == current_user.id and Messages.receiver == current_user.id )
 
             def message_serializer(message):
+                sender = User.query.filter(User.id == message.sender).first()
+                reciever  =User.query.filter(User.id == message.receiver).first()
                 return {
                     "message_text": message.message_text,
                     "sender": message.sender,
-                    "receiver": message.receiver
+                    "receiver": message.receiver,
+                    "sender_name": sender.username,
+                    "receiver_name": reciever.username
                 }
+            
                 
             return jsonify({'Messages': [*map(message_serializer, all_messages)]}), 200
         except:
@@ -102,17 +110,19 @@ def messenger_handling(user_id):
     else:
         try:
             # expect message in json format with user_id and receiver_id as the sender and recipient
-            content = request.json
+            current_user = request.json
             new_message = Messages(
-                message_text=content['message_text'],
-                sender=content['user_id'],
-                receiver=content['receiver_id']
+                message_text=current_user['message_text'],
+                sender=current_user['user_id'],
+                receiver=current_user['receiver_id']
             )
 
             db.session.add(new_message)
             db.session.commit()
             return jsonify({'Message sent': new_message.message_text}), 201
         except:
+            print(current_user)
+            print(request.json)
             return jsonify({'Error': 'Cannot send message to non-existent user'}), 404
 
 # Propose a swap and assign items to register intent

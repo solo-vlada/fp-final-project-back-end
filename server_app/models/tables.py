@@ -1,6 +1,7 @@
 from email.policy import default
 from ..database.db import db
 import datetime
+from flask_login import UserMixin
 
 class Clothing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
