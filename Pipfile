@@ -12,7 +12,12 @@ pyjwt = "*"
 datetime = "*"
 psycopg2 = "*"
 gunicorn = "*"
+<<<<<<< HEAD
 flask-login = "*"
+=======
+pytest = "*"
+pytest-cov = "*"
+>>>>>>> f079eb7a345581f29da4a711a15bcd4bf4a42bbf
 
 [dev-packages]
 pytest = "*"

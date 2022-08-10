@@ -1,4 +1,4 @@
-import pytest, requests
+import pytest
 from ..models.tables import Clothing, User
 from unittest import mock
 import json
