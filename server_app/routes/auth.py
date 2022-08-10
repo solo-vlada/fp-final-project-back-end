@@ -91,6 +91,8 @@ def messenger_handling(user_id):
 
             def message_serializer(message):
                 return {
+                    "message_id": message.message_id,
+                    "message_date" : message.message_date,
                     "message_text": message.message_text,
                     "sender": message.sender,
                     "receiver": message.receiver
@@ -169,16 +171,24 @@ def get_all_users():
 @auth_routes.route('/offers', methods=['GET'])
 def get_all_offers():
 
-    offers = Offers.query.all()
-    result = []  
-    for offer in offers:  
-        offer_data = {}  
-        offer_data['id'] = offer.id 
-        offer_data['proposer'] = offer.proposer
-        offer_data['proposer_item_id'] = offer.proposer_item_id
-        offer_data['reciever'] = offer.reciever
-        offer_data['reciever_item_id'] = offer.reciever_item_id
-        offer_data['offer_status'] = offer.offer_status
-        
-        result.append(offer_data)  
-    return jsonify({'offers': result})
+    offers = None
+    try:
+        user_offers = request.args.get('user', default=None, type=str)
+        if user_offers is not None:
+            offers = Offers.query.filter_by(proposer = user_offers, reciever= user_offers)
+        else:
+            offers = Offers.query.all()
+
+        results = []
+        for offer in offers:  
+            offer_data = {}  
+            offer_data['id'] = offer.id 
+            offer_data['proposer'] = offer.proposer
+            offer_data['proposer_item_id'] = offer.proposer_item_id
+            offer_data['reciever'] = offer.reciever
+            offer_data['reciever_item_id'] = offer.reciever_item_id
+            offer_data['offer_status'] = offer.offer_status
+            
+            results.append(offer_data)  
+    except:
+        return jsonify({'offers': results})

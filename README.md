@@ -95,6 +95,8 @@ Url contains paramater of `user_id` that is used to both send and retrieve messa
     <br> Expect message in JSON format with the following keys: <br> 
     ```JSON
     {
+        "message_id": 1,
+        "message_date" : "datetime",
         "message_text": "Hello world",
         "user_id": "1a2b3c", // user id - sender of message
         "receiver_id": "4e5f6h" // user id - recipient of message
