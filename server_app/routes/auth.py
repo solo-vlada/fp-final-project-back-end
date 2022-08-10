@@ -22,9 +22,7 @@ def token_required(f):
             return jsonify({'message': 'a valid token is missing'})
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
-            # print(data)
             current_user = User.query.filter_by(id=data['id']).first()
-            print(current_user)
         except:
             return jsonify({'message': 'token is invalid'})
         return f(current_user, *args, **kwargs)
@@ -73,7 +71,7 @@ def login_user():
 # Create new clothes item on database
 @auth_routes.route("/new-listing", methods=["POST"])
 @token_required
-def new_listing(): 
+def new_listing(current_user): 
     if request.method == "POST":
         content = request.json
         new_item = Clothing(item_name=content['item_name'], description=content['item_desc'], category=content['item_cat'], size=content['item_size'], user_id=content['item_user_id'], on_offer=False, images=content['item_images'])
@@ -104,8 +102,6 @@ def messenger_handling(current_user):
                     "sender_name": sender.username,
                     "receiver_name": reciever.username
                 }
-            
-                
             return jsonify({'Messages': [*map(message_serializer, all_messages)]}), 200
         except:
             return jsonify({'Error': 'Cannot retrieve message\'s from non-existent user'}), 404
@@ -128,8 +124,8 @@ def messenger_handling(current_user):
             return jsonify({'Error': 'Cannot send message to non-existent user'}), 404
 
 # Propose a swap and assign items to register intent
-@auth_routes.route('/create_swap/<string:user_id>', methods=['POST'])
-def create_swap(user_id):
+@auth_routes.route('/create-swap', methods=['POST'])
+def create_swap(current_user):
     if request.method == "POST":
         def swap_serializer(swap):
             return {
@@ -142,9 +138,9 @@ def create_swap(user_id):
         try:
             content = request.json
             swap_entry = Offers(
-                proposer = str(user_id),
+                proposer = current_user,
                 proposer_item_id = content['proposer_item_id'],
-                reciever = str(content['reciever']),
+                reciever = content['reciever'],
                 reciever_item_id =content['reciever_item_id'],
                 offer_status = "pending"
             )
