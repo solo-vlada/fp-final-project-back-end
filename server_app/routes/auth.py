@@ -1,3 +1,4 @@
+from ast import match_case
 from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
 from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -87,7 +88,6 @@ def messenger_handling(current_user):
     if request.method == 'GET':
         try:
             #  retrieve all messages sent by or too user
-            # user_filter = request.args.get('user_id', default=None, type=str)
             all_messages = Messages.query.filter(Messages.sender == current_user.id and Messages.receiver == current_user.id )
 
             def message_serializer(message):
@@ -125,6 +125,7 @@ def messenger_handling(current_user):
 
 # Propose a swap and assign items to register intent
 @auth_routes.route('/create-swap', methods=['POST'])
+@token_required
 def create_swap(current_user):
     if request.method == "POST":
         def swap_serializer(swap):
@@ -156,10 +157,38 @@ def create_swap(current_user):
         except:
             return jsonify({'Error': 'Cannot swap with non-existent user'}), 404
 
+# update a existing swap entry status with accept, reject or pending
+@auth_routes.route('/update-swap-status', methods=['PUT'])
+@token_required
+def update_swap_status(current_user):
+    if request.method == "PUT":
+        content = request.json
+        status = content['status']
+
+        if status == "accepted":
+            offer_entry = Offers.query.get(content['offer_id'])
+            offer_entry.offer_status = "accepted"
+
+        elif status == "rejected":
+            offer_entry = Offers.query.get(content['offer_id'])
+            offer_entry.offer_status = "rejected"
+
+            proposed_item = Clothing.query.get(content['proposer_item_id'])
+            proposed_item.on_offer = False
+
+        elif status == "pending":
+            offer_entry = Offers.query.get(content['offer_id'])
+            offer_entry.offer_status = "pending"
+
+            proposed_item = Clothing.query.get(content['proposer_item_id'])
+            proposed_item.on_offer = True
+
+    return jsonify(f"msg: offer #{content['offer_id']} has been updated to: {status}"), 204
+
 # Test route recieve all users in json format
 @auth_routes.route('/users', methods=['GET'])
 def get_all_users():
-
+        
     users = User.query.all()
     result = []  
     for user in users:  
@@ -195,5 +224,6 @@ def get_all_offers():
             offer_data['offer_status'] = offer.offer_status
             
             results.append(offer_data)  
+        return jsonify({'offers': results}), 200
     except:
-        return jsonify({'offers': results})
+        return jsonify({'error': 'Bad request'}), 400
