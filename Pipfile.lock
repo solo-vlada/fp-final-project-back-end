@@ -2,7 +2,11 @@
     "_meta": {
         "hash": {
 <<<<<<< HEAD
+<<<<<<< HEAD
             "sha256": "ffc5527de07edad9c05642c0cfa13ef2e880be9cdf901279ee9207d9bcfd6afc"
+=======
+            "sha256": "273701bc8f70cc7782ae61b2c8bf27f74aefc05a640c340f96e6fbb325050942"
+>>>>>>> f079eb7a345581f29da4a711a15bcd4bf4a42bbf
 =======
             "sha256": "273701bc8f70cc7782ae61b2c8bf27f74aefc05a640c340f96e6fbb325050942"
 >>>>>>> f079eb7a345581f29da4a711a15bcd4bf4a42bbf
@@ -425,7 +429,10 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
             "version": "==1.4.40"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> f079eb7a345581f29da4a711a15bcd4bf4a42bbf
         },
         "tomli": {
             "hashes": [
@@ -434,6 +441,9 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==2.0.1"
+<<<<<<< HEAD
+>>>>>>> f079eb7a345581f29da4a711a15bcd4bf4a42bbf
+=======
 >>>>>>> f079eb7a345581f29da4a711a15bcd4bf4a42bbf
         },
         "werkzeug": {
