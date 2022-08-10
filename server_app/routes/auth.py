@@ -26,7 +26,7 @@ def token_required(f):
         except:
             return jsonify({'message': 'token is invalid'})
         return f(current_user, *args, **kwargs)
-    return decorator
+    return decorator    
 
 # Register new user / expects json post handled by frontend
 @auth_routes.route('/register', methods=['POST'])
