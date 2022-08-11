@@ -189,6 +189,8 @@ def get_all_offers(current_user):
             offers = Offers.query.all()
 
         def offer_serializer(offer):
+            proposer_name = User.query.filter(User.id == current_user.id).first()
+            reciever_name = User.query.filter(User.id == offer.reciever).first()
             return {
                 "offer_id": offer.offer_id,
                 "proposer": current_user.id,
@@ -196,6 +198,8 @@ def get_all_offers(current_user):
                 "reciever": offer.reciever,
                 "reciever_item_id": offer.reciever_item_id,
                 "offer_status": offer.offer_status,
+                "proposer_name": proposer_name,
+                "reciever_name": reciever_name,
             }
         return jsonify([*map(offer_serializer, offers)]), 200
     except:
