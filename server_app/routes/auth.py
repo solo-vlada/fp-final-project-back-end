@@ -191,7 +191,7 @@ def get_all_offers(current_user):
         def offer_serializer(offer):
             return {
                 "offer_id": offer.offer_id,
-                "proposer": offer.proposer,
+                "proposer": current_user.id,
                 "proposer_item_id": offer.proposer_item_id,
                 "reciever": offer.reciever,
                 "reciever_item_id": offer.reciever_item_id,

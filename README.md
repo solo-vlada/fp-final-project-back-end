@@ -139,7 +139,7 @@ Optional paramater of `user` allows for narrowing down offers by '`proposer`'
     Exected response example: <br> 
 
     ```JSON
-    {"offers": [
+    {[
         {
             "id": 1,
             "proposer": "a1b2c3",
