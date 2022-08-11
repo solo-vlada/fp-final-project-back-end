@@ -187,18 +187,16 @@ def get_all_offers():
         else:
             offers = Offers.query.all()
 
-        results = []
-        for offer in offers:  
-            offer_data = {}  
-            offer_data['id'] = offer.id 
-            offer_data['proposer'] = offer.proposer
-            offer_data['proposer_item_id'] = offer.proposer_item_id
-            offer_data['reciever'] = offer.reciever
-            offer_data['reciever_item_id'] = offer.reciever_item_id
-            offer_data['offer_status'] = offer.offer_status
-            
-            results.append(offer_data)  
-        return jsonify({'offers': results}), 200
+        def offer_serializer(offer):
+            return {
+                "offer_id": offer.offer_id,
+                "proposer": offer.proposer,
+                "proposer_item_id": offer.proposer_item_id,
+                "reciever": offer.reciever,
+                "reciever_item_id": offer.reciever_item_id,
+                "offer_status": offer.offer_status,
+            }
+        return jsonify([*map(offer_serializer, offers)]), 200
     except:
         return jsonify({'error': 'Bad request'}), 400
 
