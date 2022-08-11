@@ -22,16 +22,16 @@ Here are the routes for using the API along with their expected receiving and se
 
 ## <ins>Main routes</ins>
 
-## Index/root url - `/`
+## Index/root url - `/` - optional paramaters `user`, `category`
 - Allowed methods:  
-    - GET: Retrieves all from clothing items data, allowing for filtering via optional paramaters returning an array of JSON data. 
+    - GET: Retrieves all from clothing items data, allowing for filtering via optional paramaters allowing you to retrieve entries from a single `user` or by `category` returning an array of JSON data. 
     <br> Exected response example: <br> 
     ```JSON
     [{
         "category": "t-shirt",
         "description": "cool t-shirt",
         "id": 1, // id of item
-        "images": "url_to_item_images",
+        "images": "url_to_item_images", // url to firebase servers
         "item_name": "item 1",
         "on_offer": false,
         "size": "M",
@@ -39,48 +39,47 @@ Here are the routes for using the API along with their expected receiving and se
     },]
     ```
 
+## <ins>Auth routes</ins>
+
 ## Create new list item - `/new-listing`
 - Allowed methods: 
-    - POST: Creates new `clothing_item` database entry from Form request. 
-    <br>Expects the following valid fields:  <br> 
-    `'item_name', 'item_desc', 'item_cat', 'item_size', 'item_user_id', 'item_images'`
-
-## <ins>Auth routes</ins>
+    - POST: Creates new `clothing_item` table entry from JSON request. 
+    <br> Exected request example: <br> 
+    ```JSON
+    {
+        "item_name": "clothing item",
+        "item_desc": "descriptive text",
+        "item_cat": "dress",
+        "item_size": "M",
+        "item_user_id": "1a2b3c", // id of user who created item
+        "item_images": "url_to_item_images" // url to firebase servers
+    }
+    ```
 
 ## Register - `/auth/register`
 - Allowed methods:  
-    - POST: Creates new `user` database entry from JSON request expecting the following keys: <br> 
-    `'username', 'password', 'email', 'location'`
+    - POST: Creates new `user` table entry from JSON request expecting the following keys: <br>
+     ```JSON
+    {
+        "username": "username",
+        "password": "password",
+        "email": "email@mail.com",
+        "location": "city"
+    }
+     ```
 
 ## Login - `/auth/login`
 - Allowed methods:  
     - POST: Searches through database for valid `user` to login and return `JWT`. 
     <br> Request is expected to contain the following keys within a basic auth: <br> 
-    `'username', 'password'`, no JSON or body is required
+    `'username', 'password'`, no JSON body is required
 
 
-## Return all users - `/auth/users`
-`TESTING PURPOSES` do not use in production
-- Allowed methods:  
-    - GET: Searches through database for all `user` entries and returns them in JSON.  <br> Exected response example: <br> 
-
-    ```JSON
-    {"users": [
-        {
-        "email": "test@test.com",
-        "id": "1a2b3c",
-        "location": "New York",
-        "password": "test",
-        "username": "michael"
-        },
-    ]}
-    ```
-
-## Message another user - `/auth/msg/<string:user_id>`
-Url contains paramater of `user_id` that is used to both send and retrieve messages, is sent to local storage along with `JWT`.
+## Message another user - `/auth/msg`
+Current user is determined by the `user_id` decoded within the `JWT`, which when sent along side the request is used to create and access messages.
 
 - Allowed methods:  
-    - GET: Retrieve all messages sent by or too `user` and returns them in JSON.  
+    - GET: Retrieve all messages sent by or too `user_id` from `JWT` and returns them in JSON.  
     Exected JSON response example: <br> 
     ```JSON
     {"Messages": [
@@ -88,12 +87,14 @@ Url contains paramater of `user_id` that is used to both send and retrieve messa
             "message_id": 1,
             "message_date" : "datetime",
 			"message_text": "Hello world",
+			"sender": "4e5f6h", // user id - sender of message
 			"receiver": "1a2b3c", // user id - recipient of message
-			"sender": "4e5f6h" // user id - sender of message
-		},
+            "sender_name": "sender_username",
+            "receiver_name": "receiver_username"
+		}
     ]}
     ```
-    - POST: Create new entry within the `message` database.
+    - POST: Create new entry within the `message` table.
     <br> Expect message in JSON format with the following keys: <br> 
     ```JSON
     {
@@ -101,4 +102,69 @@ Url contains paramater of `user_id` that is used to both send and retrieve messa
         "user_id": "1a2b3c", // user id - sender of message
         "receiver_id": "4e5f6h" // user id - recipient of message
     }
+    ```
+
+## Propose offer - `/auth/create-swap`
+Current user/proposer of offer is determined by the `user_id` decoded within the `JWT`, which when sent along side the request.
+
+- Allowed methods:  
+    - POST: Create new entry within the `offer` table.
+    <br> Exected JSON request example: <br> 
+    ```JSON
+    {
+        "proposer_item_id": 4, //clothing item id
+        "reciever": "a1b2c3", //user id of proposal reciever
+        "reciever_item_id": 5, //clothing item id
+    }
+    ```
+
+## Update offer - `/auth/update-swap-status`
+Update existing `offer` status's with `pending`, `accepted`, `rejected` along with other relevent tables data.
+
+- Allowed methods:  
+    - PUT: Update existing entry within the `offer` table.
+    <br> Exected JSON request example: <br> 
+    ```JSON
+    {
+        "offer_id": 4, 
+        "proposer_item_id": 2, //clothing item id
+        "status": "accepted",  // new status to update existing
+    }
+    ```
+
+## Return all offers - `/auth/offers`  - optional paramaters `user`
+Optional paramater of `user` allows for narrowing down offers by '`proposer`'
+- Allowed methods:  
+    - GET: Searches through database for all `offer` entries and returns them in JSON.  
+    Exected response example: <br> 
+
+    ```JSON
+    {"offers": [
+        {
+            "id": 1,
+            "proposer": "a1b2c3",
+            "proposer_item_id": 2,
+            "reciever": "d4f4g6",
+            "reciever_item_id": 3,
+            "offer_status": "pending"
+        },
+    ]}
+    ```
+
+## Return all users - `/auth/users`
+`TESTING PURPOSES` do not use in production
+- Allowed methods:  
+    - GET: Searches through database for all `user` entries and returns them in JSON.  
+    Exected response example: <br> 
+
+    ```JSON
+    {"users": [
+        {
+            "email": "test@test.com",
+            "id": "1a2b3c",
+            "location": "New York",
+            "password": "test",
+            "username": "michael"
+        },
+    ]}
     ```

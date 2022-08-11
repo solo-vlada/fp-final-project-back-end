@@ -1,3 +1,4 @@
+from ast import match_case
 from flask import Blueprint, jsonify, make_response, request, current_app as app, redirect
 from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash,check_password_hash
@@ -87,7 +88,6 @@ def messenger_handling(current_user):
     if request.method == 'GET':
         try:
             #  retrieve all messages sent by or too user
-            # user_filter = request.args.get('user_id', default=None, type=str)
             all_messages = Messages.query.filter(Messages.sender == current_user.id and Messages.receiver == current_user.id )
 
             def message_serializer(message):
@@ -128,14 +128,6 @@ def messenger_handling(current_user):
 @token_required
 def create_swap(current_user):
     if request.method == "POST":
-        def swap_serializer(swap):
-            return {
-                "proposer": swap.proposer,
-                "proposer_item_id": swap.proposer_item_id,
-                "reciever": swap.reciever,
-                "reciever_item_id": swap.reciever_item_id,
-                "offer_status": swap.offer_status,
-            }
         try:
             content = request.json
             swap_entry = Offers(
@@ -145,36 +137,46 @@ def create_swap(current_user):
                 reciever_item_id =content['reciever_item_id'],
                 offer_status = "pending"
             )
-
+            print(swap_entry)
             db.session.add(swap_entry)
+
+            proposed_item = Clothing.query.get(swap_entry.proposer_item_id)
+            proposed_item.on_offer = True
+            print(proposed_item)
+            db.session.commit()
+
+            return jsonify({"Success": "Swap entry created"}), 201
+        except:
+            return jsonify({'Error': 'Cannot swap with non-existent user'}), 404
+
+# update a existing swap entry status with accept, reject or pending
+@auth_routes.route('/update-swap-status', methods=['PUT'])
+@token_required
+def update_swap_status(current_user):
+    if request.method == "PUT":
+        content = request.json
+        status = content['status']
+
+        if status == "accepted":
+            offer_entry = Offers.query.get(content['offer_id'])
+            offer_entry.offer_status = "accepted"
+
+        elif status == "rejected":
+            offer_entry = Offers.query.get(content['offer_id'])
+            offer_entry.offer_status = "rejected"
+
+            proposed_item = Clothing.query.get(content['proposer_item_id'])
+            proposed_item.on_offer = False
+
+        elif status == "pending":
+            offer_entry = Offers.query.get(content['offer_id'])
+            offer_entry.offer_status = "pending"
 
             proposed_item = Clothing.query.get(content['proposer_item_id'])
             proposed_item.on_offer = True
 
-            db.session.commit()
+    return jsonify(f"msg: offer #{content['offer_id']} has been updated to: {status}"), 204
 
-            return jsonify(swap_serializer(swap_entry)), 201
-        except:
-            return jsonify({'Error': 'Cannot swap with non-existent user'}), 404
-
-# Test route recieve all users in json format
-@auth_routes.route('/users', methods=['GET'])
-def get_all_users():
-
-    users = User.query.all()
-    result = []  
-    for user in users:  
-        user_data = {}  
-        user_data['id'] = user.id 
-        user_data['username'] = user.username
-        user_data['password'] = user.password
-        user_data['location'] = user.location
-        user_data['email'] = user.email
-        
-        result.append(user_data)  
-    return jsonify({'users': result})
-
-# Test route recieve all offers in json format
 @auth_routes.route('/offers', methods=['GET'])
 def get_all_offers():
     offers = None
@@ -196,5 +198,23 @@ def get_all_offers():
             offer_data['offer_status'] = offer.offer_status
             
             results.append(offer_data)  
+        return jsonify({'offers': results}), 200
     except:
-        return jsonify({'offers': results})
+        return jsonify({'error': 'Bad request'}), 400
+
+# Test route recieve all users in json format
+@auth_routes.route('/users', methods=['GET'])
+def get_all_users():
+        
+    users = User.query.all()
+    result = []  
+    for user in users:  
+        user_data = {}  
+        user_data['id'] = user.id 
+        user_data['username'] = user.username
+        user_data['password'] = user.password
+        user_data['location'] = user.location
+        user_data['email'] = user.email
+        
+        result.append(user_data)  
+    return jsonify({'users': result})
