@@ -178,7 +178,8 @@ def update_swap_status(current_user):
     return jsonify(f"msg: offer #{content['offer_id']} has been updated to: {status}"), 204
 
 @auth_routes.route('/offers', methods=['GET'])
-def get_all_offers():
+@token_required
+def get_all_offers(current_user):
     offers = None
     try:
         user_offers = request.args.get('user', default=None, type=str)
@@ -190,7 +191,7 @@ def get_all_offers():
         def offer_serializer(offer):
             return {
                 "offer_id": offer.offer_id,
-                "proposer": offer.proposer,
+                "proposer": current_user.id,
                 "proposer_item_id": offer.proposer_item_id,
                 "reciever": offer.reciever,
                 "reciever_item_id": offer.reciever_item_id,
