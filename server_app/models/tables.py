@@ -59,7 +59,8 @@ class Messages(db.Model):
     message_text = db.Column(db.String(80), nullable=False)
     message_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow())
 
-    def __init__(self, message_text, sender, receiver):
+    def __init__(self, message_text, sender, receiver, offer_id):
         self.message_text = message_text
         self.sender = sender
         self.receiver = receiver
+        self.offer_id = offer_id
