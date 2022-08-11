@@ -191,7 +191,7 @@ def get_all_offers(current_user):
         offers = Offers.query.all()
 
         def offer_serializer(offer):
-            proposer_name = User.query.filter(User.id == current_user.id).first()
+            proposer_name = User.query.filter(User.id == offer.proposer).first()
             reciever_name = User.query.filter(User.id == offer.reciever).first()
             return {
                 "offer_id": offer.offer_id,
