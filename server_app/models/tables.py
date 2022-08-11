@@ -42,7 +42,7 @@ class Offers(db.Model):
     reciever = db.Column(db.ForeignKey('user.id'))
     reciever_item_id = db.Column(db.Integer, db.ForeignKey('clothing.id'))
     offer_status = db.Column(db.String(80), nullable=False)
-    offer_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow()) #proposed extra columns for offer table
+    # offer_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow()) #proposed extra columns for offer table
 
     def __init__(self, proposer, proposer_item_id, reciever, reciever_item_id, offer_status):
         self.proposer = proposer,
