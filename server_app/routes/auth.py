@@ -131,7 +131,7 @@ def create_swap(current_user):
         try:
             content = request.json
             swap_entry = Offers(
-                proposer = current_user,
+                proposer = current_user.id,
                 proposer_item_id = content['proposer_item_id'],
                 reciever = content['reciever'],
                 reciever_item_id =content['reciever_item_id'],
@@ -181,29 +181,29 @@ def update_swap_status(current_user):
 @token_required
 def get_all_offers(current_user):
     offers = None
-    try:
-        user_offers = request.args.get('user', default=None, type=str)
-        if user_offers is not None:
-            offers = Offers.query.filter_by(proposer = user_offers, reciever= user_offers)
-        else:
-            offers = Offers.query.all()
+    # try:
+    user_offers = request.args.get('user', default=None, type=str)
+    if user_offers is not None:
+        offers = Offers.query.filter_by(proposer = user_offers, reciever= user_offers)
+    else:
+        offers = Offers.query.all()
 
         def offer_serializer(offer):
             proposer_name = User.query.filter(User.id == current_user.id).first()
             reciever_name = User.query.filter(User.id == offer.reciever).first()
             return {
                 "offer_id": offer.offer_id,
-                "proposer": current_user.id,
+                "proposer": offer.proposer,
                 "proposer_item_id": offer.proposer_item_id,
                 "reciever": offer.reciever,
                 "reciever_item_id": offer.reciever_item_id,
                 "offer_status": offer.offer_status,
-                "proposer_name": proposer_name,
-                "reciever_name": reciever_name,
+                "proposer_name": proposer_name.username,
+                "reciever_name": reciever_name.username,
             }
         return jsonify([*map(offer_serializer, offers)]), 200
-    except:
-        return jsonify({'error': 'Bad request'}), 400
+    # except:
+    #     return jsonify({'error': 'Bad request'}), 400
 
 # Test route recieve all users in json format
 @auth_routes.route('/users', methods=['GET'])
@@ -221,3 +221,10 @@ def get_all_users():
         
         result.append(user_data)  
     return jsonify({'users': result})
+
+# Test route wipe a table
+@auth_routes.route('/wipe', methods=['GET'])
+def wipe():
+        
+    Offers.query.delete()
+    return jsonify({'msg': "successfuly deleted"})
