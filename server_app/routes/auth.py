@@ -178,7 +178,8 @@ def update_swap_status(current_user):
     return jsonify(f"msg: offer #{content['offer_id']} has been updated to: {status}"), 204
 
 @auth_routes.route('/offers', methods=['GET'])
-def get_all_offers():
+@token_required
+def get_all_offers(current_user):
     offers = None
     try:
         user_offers = request.args.get('user', default=None, type=str)
