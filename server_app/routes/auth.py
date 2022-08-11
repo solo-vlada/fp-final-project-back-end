@@ -87,8 +87,8 @@ def new_listing(current_user):
 def messenger_handling(current_user):
     if request.method == 'GET':
         try:
-            #  retrieve all messages sent by or too user
-            all_messages = Messages.query.filter(Messages.sender == current_user.id and Messages.receiver == current_user.id )
+            param_offer_id = request.args.get('offer_id', default=None, type=int)
+            all_messages = Messages.query.filter(Messages.offer_id == param_offer_id)
 
             def message_serializer(message):
                 sender = User.query.filter(User.id == message.sender).first()
@@ -100,7 +100,8 @@ def messenger_handling(current_user):
                     "sender": message.sender,
                     "receiver": message.receiver,
                     "sender_name": sender.username,
-                    "receiver_name": reciever.username
+                    "receiver_name": reciever.username,
+                    "offer_id": message.offer_id
                 }
             return jsonify({'Messages': [*map(message_serializer, all_messages)]}), 200
         except:
@@ -110,9 +111,10 @@ def messenger_handling(current_user):
             # expect message in json format with user_id and receiver_id as the sender and recipient
             current_user = request.json
             new_message = Messages(
-                message_text=current_user['message_text'],
-                sender=current_user['user_id'],
-                receiver=current_user['receiver_id']
+                message_text = current_user['message_text'],
+                sender = current_user['user_id'],
+                receiver = current_user['receiver_id'],
+                offer_id = current_user['offer_id']
             )
 
             db.session.add(new_message)
