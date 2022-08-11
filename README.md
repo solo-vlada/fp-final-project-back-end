@@ -132,6 +132,25 @@ Update existing `offer` status's with `pending`, `accepted`, `rejected` along wi
     }
     ```
 
+## Return all offers - `/auth/offers`  - optional paramaters `user`
+Optional paramater of `user` allows for narrowing down offers by '`proposer`'
+- Allowed methods:  
+    - GET: Searches through database for all `offer` entries and returns them in JSON.  
+    Exected response example: <br> 
+
+    ```JSON
+    {"offers": [
+        {
+            "id": 1,
+            "proposer": "a1b2c3",
+            "proposer_item_id": 2,
+            "reciever": "d4f4g6",
+            "reciever_item_id": 3,
+            "offer_status": "pending"
+        },
+    ]}
+    ```
+
 ## Return all users - `/auth/users`
 `TESTING PURPOSES` do not use in production
 - Allowed methods:  
@@ -146,25 +165,6 @@ Update existing `offer` status's with `pending`, `accepted`, `rejected` along wi
             "location": "New York",
             "password": "test",
             "username": "michael"
-        },
-    ]}
-    ```
-
-## Return all offers - `/auth/offers`  - optional paramaters `user`
-`TESTING PURPOSES` do not use in production, optional paramater of `user` allows for narrowing down offers by '`proposer`'
-- Allowed methods:  
-    - GET: Searches through database for all `offer` entries and returns them in JSON.  
-    Exected response example: <br> 
-
-    ```JSON
-    {"offers": [
-        {
-            "id": 1,
-            "proposer": "a1b2c3",
-            "proposer_item_id": 2,
-            "reciever": "d4f4g6",
-            "reciever_item_id": 3,
-            "offer_status": "pending"
         },
     ]}
     ```
