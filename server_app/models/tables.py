@@ -53,6 +53,7 @@ class Offers(db.Model):
 
 class Messages(db.Model):
     message_id = db.Column(db.Integer, primary_key=True)
+    offer_id = db.Column(db.Integer, db.ForeignKey('offers.offer_id'))
     sender = db.Column(db.ForeignKey('user.id'))
     receiver = db.Column(db.ForeignKey('user.id'))
     message_text = db.Column(db.String(80), nullable=False)
