@@ -223,10 +223,3 @@ def get_all_users():
         
         result.append(user_data)  
     return jsonify({'users': result})
-
-# Test route wipe a table
-# @auth_routes.route('/wipe', methods=['GET'])
-# def wipe():
-        
-#     Offers.query.delete()
-#     return jsonify({'msg': "successfuly deleted"})

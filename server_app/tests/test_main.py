@@ -3,12 +3,14 @@ import pytest, json
 from ..routes.main import index
 from unittest import mock
 
+userId = "0f1dcb48-19a0-11ed-b2a7-704d7b3306bd"
+
 def test_index_get(api):
     resp = api.get('/')
     assert resp.status == '200 OK'
 
 def test_index_get_personal_listings(api):
-    resp = api.get('/?user=1f4d9382-17ff-11ed-8ac3-704d7b3306bd')
+    resp = api.get('/?user={id}'.format(id = userId))
     assert resp.status == '200 OK'
 
 def test_index_get_filter_results(api):
@@ -16,7 +18,7 @@ def test_index_get_filter_results(api):
     assert resp.status == '200 OK'
 
 def test_index_get_personal_listings_filtered(api):
-    resp = api.get('/?user=1f4d9382-17ff-11ed-8ac3-704d7b3306bd&category=shirt')
+    resp = api.get('/?user={id}&category=shirt'.format(id = userId))
     assert resp.status == '200 OK'
 
 def test_index_error(api):
